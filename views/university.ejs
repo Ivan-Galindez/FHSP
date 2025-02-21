@@ -1,0 +1,394 @@
+<%- include('./partials/navbar.ejs'); -%> 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="register_u">
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="university" class="form-label">Nombre o Razon social</label>
+                            <input type="text" class="form-control" id="university" placeholder="Universidad" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nit" class="form-label">Nit</label>
+                            <input type="text" class="form-control" id="nit" placeholder="123456789" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">email</label>
+                            <input type="text" class="form-control" id="email" placeholder="email@gmail.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" id="phone" placeholder="312312123" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="department">Departamento</label>
+                            <select class="form-select" id="department" name="department" aria-label="Departamento" onchange="get_municipios(this)">
+                                <option value="" disabled selected>Seleccione Departamento</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 ">
+                            <label for="city">Ciudad</label>
+                            <select class="form-select" id="city" name="city" aria-label="Ciudad">
+                                <option value="" disabled selected>Seleccione Ciudad</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="address" placeholder="Dirección">
+                        </div>
+                        <div class="mb-3">
+                            <label for="link" class="form-label">Link</label>
+                            <input type="text" class="form-control" id="link" placeholder="posteriormente para acceder a este link de clic en el icono">
+                        </div>
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">Icono</label>
+                            <input class="form-control" type="file" id="formFile">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn_registro" onclick="register()"><i class="fas fa-plus"></i> Registrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modale_student" tabindex="-1" aria-labelledby="modale_studentLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Estudiantes registrados</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Nombre</th>
+                            <th>Profesión</th>
+                            <th>Semestre</th>
+                            <th>Correo</th>
+                            <th>Telefono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="es_table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="container mt-4">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="far fa-plus-square"></i> Universidad</button>
+    <hr>
+    <div class="row">
+        <div class="col-12 text-center">
+            <h5>Universidades Registradas</h5>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Universidad</th>
+                            <th>Nit</th>
+                            <th>Correo</th>
+                            <th>Telefono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="un_table">
+                        <% entidades.forEach(entidad => { %>
+                            <tr>
+                                <td>
+                                    <div class="d-flex px-2">
+                                        <div style="max-height: 100px;">
+                                            <img src="/univ/<%= entidad.icon_name %>" class=" me-2" height="50px" alt="<%= entidad.name %>">
+                                        </div>
+                                        <div class="my-auto">
+                                            <h6 class="mb-0 text-sm"><%= entidad.name %></h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><p class="text-sm font-weight-bold mb-0"><%= entidad.university %> </td>
+                                <td><p class="text-sm font-weight-bold mb-0"><%= entidad.nit %> </td>
+                                <td><span class="text-xs font-weight-bold"><%= entidad.email %> </span></td>
+                                <td><span class="text-xs font-weight-bold"><%= entidad.phone %> </span></td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="getStudents('<%= entidad._id %>')"><i class="fas fa-id-card-alt" title="Ver estudiantes"></i></button>
+                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt" title="Eliminar"></i></button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+              </div>
+        </div>
+    </div>
+</div>
+
+<script>
+     async function get_dpto(){
+        let render = ''
+        let url = `https://api-colombia.com/api/v1/Department`
+        axios.get(url)
+        .then(function(response) {
+            // console.log(response)
+            if(response.data != 0){
+                response.data.forEach(element => {
+                    render += `
+                        <option value="${element.id}">${element.name}</option>
+                    `
+                })
+                // document.getElementById('expedition_department').innerHTML += render
+                document.getElementById('department').innerHTML += render
+            }
+        })
+        .catch(function(error) {
+            console.log(error)
+        })
+    }
+    
+    // ==> solicitar el municipio de un departamento en especifico
+    async function get_municipios(from){
+        let render = ''
+        let dpto = ''
+        if(from.id == 'department'){
+            dpto = document.getElementById('department').value
+        }
+        let url = `https://api-colombia.com/api/v1/Department/${dpto}/cities`
+        await axios.get(url)
+        .then(function(response) {
+            // console.log(response)
+            if(response.data != 0){
+                response.data.forEach(element => {
+                    render += `
+                        <option value="${element.id}">${element.name}</option>
+                    `
+                })
+                if(from.id == 'department'){
+                    document.getElementById('city').innerHTML = render
+                }
+            }
+        })
+        .catch(function(error) {
+            console.log(error)
+        })
+    }
+
+    async function register(){
+        let university = document.getElementById('university')
+        let nit = document.getElementById('nit')
+        let email = document.getElementById('email')
+        let phone = document.getElementById('phone')
+        let department = document.getElementById('department')
+        let city = document.getElementById('city')
+        let address = document.getElementById('address')
+        let link = document.getElementById('link')
+        let icon = document.getElementById('formFile')
+        
+        let department_option = department.options[department.selectedIndex];
+        let city_option = city.options[city.selectedIndex];
+
+        let btn = document.getElementById('btn_registro')
+        btn.disabled = true;
+        btn.innerHTML = `
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        `
+
+        let send_post = true
+
+        const form = document.getElementById('register_u')
+        Array.from(form.elements).forEach(element => {
+            if (!element.value) {
+                element.classList.add("is-invalid");
+                element.classList.remove("is-valid");
+                send_post = false
+            } else {
+                element.classList.remove("is-invalid");
+                element.classList.add("is-valid");
+            }
+        });
+
+        let emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+        //Se registra el valor invalido del email
+        if(email.value != ''){
+            if (emailRegex.test(email.value)) {
+                email.classList.remove("is-invalid");
+                email.classList.add("is-valid");
+                // send_post = true
+            } else {
+                email.classList.add("is-invalid");
+                email.classList.remove("is-valid");
+                send_post = false
+            }
+        }
+
+        let render = ''
+        console.log(send_post)
+
+        if(send_post){
+            let formData = new FormData();
+            formData.append('university', university.value);
+            formData.append('nit', nit.value);
+            formData.append('email', email.value);
+            formData.append('phone', phone.value);
+            formData.append('department', department_option.text);
+            formData.append('city', city_option.text);
+            formData.append('address', address.value);
+            formData.append('link', link.value);
+
+            if(icon.files[0]){
+                console.log('hay archivo')
+                formData.append('icon_name',  nit.value + '-' + icon.files[0].name.toLowerCase());
+                console.log(icon.files[0])
+                formData.append('icon', icon.files[0]);
+            }else{
+                formData.append('icon_name', '');
+            }
+
+            let url = `/user/register`
+            await axios({
+                method: 'post',
+                url: url,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(function(response) {
+                console.log(response)
+                if(response.data != 0){
+                    let entidad = response.data.result
+                    render += `
+                        <tr>
+                            <td>
+                                <div class="d-flex px-2">
+                                    <div>
+                                        <img src="/univ/${entidad.icon_name}" class="me-2" height="50px" alt="${entidad.name}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td><p class="text-sm font-weight-bold mb-0">${entidad.university}</td>
+                            <td><p class="text-sm font-weight-bold mb-0">${entidad.nit}</td>
+                            <td><span class="text-xs font-weight-bold">${entidad.email}</span></td>
+                            <td><span class="text-xs font-weight-bold">${entidad.phone}</span></td>
+                            <td><button class="btn btn-primary btn-sm"><i class="fas fa-hospital-user"></i></button></td>
+                            <td><button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button></td>
+                        </tr>
+                    `
+                    document.getElementById('un_table').innerHTML += render
+
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fas fa-paper-plane"></i> Registrar`
+
+                    Array.from(form.elements).forEach(element => {
+                        element.classList.remove("is-valid");
+                        element.classList.remove("is-invalid");
+                        if(element.id != 'id_center'){
+                            element.value = ''
+                        }
+                    });
+                    Swal.fire({
+                        title: "Universidad registrada",
+                        text: "Ahora puedes ingresar como universidad para registrar Estudiantes, los datos de acceso son el numero de nit registrado",
+                        icon: "success"
+                    });
+                    $("#exampleModal").modal("hide")
+
+                }
+            })
+            .catch(function(error) {
+                console.log(error)
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-paper-plane"></i> Registrar`
+            })
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fas fa-paper-plane"></i> Registrar`
+        }
+    }
+
+    async function getStudents(id){
+        let render = ''
+        let url = `/user/students/${id}/get`
+        await axios.get(url)
+        .then(function(response) {
+            console.log(response)
+            if(response.data != 0){
+                response.data.forEach(element => {
+                    console.log(element)
+                    if(element.rol == 'user'){
+                        render += `
+                            <tr>
+                                <td></td>
+                                <td>${element.profile.name}</td>
+                                <td>${element.profile.profesion}</td>
+                                <td>${element.profile.semestre}</td>
+                                <td>${element.profile.email}</td>
+                                <td>${element.profile.phone}</td>
+                                <td>
+                                    <select class="form-select" aria-label="Default select example" onchange="updateStudent('${element._id}', this)">
+                                        <option ${element.state == "espera" ? `selected`:``}>espera</option>
+                                        <option ${element.state == "Aceptado" ? `selected`:``}>Aceptado</option>
+                                        <option ${element.state == "Rechazado" ? `selected`:``}>Rechazado</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        `
+                    }
+                })
+                document.getElementById('es_table').innerHTML = render
+                $("#modale_student").modal("show")
+            }
+        })
+        .catch(function(error) {
+            console.log(error)
+        })
+    }
+
+    async function updateStudent(id, from){
+        let url = `/user/student/${id}/update`
+        let data = {
+            state: from.value
+        }
+        await axios.post(url, data)
+        .then(function(response) {
+            console.log(response)
+            if(response.data != 0){
+                Swal.fire({
+                    title: "Estudiante actualizado",
+                    text: "El estado del estudiante ha sido actualizado",
+                    icon: "success"
+                });
+            }
+        })
+        .catch(function(error) {
+            console.log(error)
+        })
+    }
+
+    window.onload = function() {
+        get_dpto();
+	}
+</script>

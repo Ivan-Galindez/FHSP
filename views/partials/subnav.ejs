@@ -1,0 +1,44 @@
+<div class="ps-2 pt-2 position-relative">
+    <div class="position-absolute top-50 start-90">
+        <button class="btn btn-link" title="Notificaciones">
+            <i class="fas fa-bell fa-lg text-white position-relative">
+                <span class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-secondary p-2"><span class="visually-hidden">unread messages</span></span>
+            </i>
+        </button>
+    </div>
+    <p class="text-white"><i class="far fa-calendar fa-lg"></i> <span class="" id="last_date"></span></p>
+    <p class="fw-bold text-white">Hola, <span id="full_name_producer">
+        <% if (user.profile.name) { %>
+            <%= user.profile.name %>
+        <% } %></span>
+    </p>
+    <p class="fw-bold" style="color: lightgrey; font-size: 12px;"><%= user.center[0].center_name %></p>
+</div>
+
+<script>
+    var body = document.body;
+    body.style.backgroundColor = 'lightgrey'
+
+    let date = new Date();
+    let strDate = date + ''
+    let day = ''
+
+    if(strDate.substr(0,3) == "Sun"){
+        day = "Dom"
+    }if(strDate.substr(0,3) == "Mon"){
+        day = "Lun"
+    }if(strDate.substr(0,3) == "Tue"){
+        day = "Mar"
+    }if(strDate.substr(0,3) == "Wed"){
+        day = "Mie"
+    }if(strDate.substr(0,3) == "Thu"){
+        day = "Jue"
+    }if(strDate.substr(0,3) == "Fri"){
+        day = "Vie"
+    }if(strDate.substr(0,3) == "Sat"){
+        day = "Sab"
+    }
+
+    document.getElementById('last_date').innerHTML = `${day}, ${strDate.substr(4,11)}`
+
+</script>

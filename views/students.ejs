@@ -1,0 +1,252 @@
+<%- include('./partials/navbar.ejs'); -%> 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Registrar estudiante</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="register_u">
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nombre </label>
+                            <input type="text" class="form-control" id="name" placeholder="Juan Peres" required>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label for="identification_type" class="form-label">Tipo de id:</label>
+                            <select class="form-select ps-3" id="identification_type"  style="border: 1px solid #d2d6da">
+                                <option value="" disabled>Seleccione</option>
+                                <option selected>C.C.</option>
+                                <option>Registro civil</option>
+                                <option>C.E</option>
+                                <option>Tarjeta de identidad</option>
+                                <option>Pasaporte</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label for="identification" class="form-label">Identificacion</label>
+                            <input type="number" class="form-control ps-3" style="border: 1px solid #d2d6da" id="identification">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">email</label>
+                            <input type="text" class="form-control" id="email" placeholder="email@gmail.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" id="phone" placeholder="ej. 312312123" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="profesion" class="form-label">Profesión</label>
+                            <input type="text" class="form-control" id="profesion" placeholder="ej. Medicina" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="semestre" class="form-label">Semestre</label>
+                            <input type="number" class="form-control" id="semestre" placeholder="ej. 8" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sexo" class="form-label">Sexo:</label>
+                            <select class="form-select ps-3" id="sexo"  style="border: 1px solid #d2d6da">
+                                <option value="" disabled>Seleccione</option>
+                                <option selected>Hombre</option>
+                                <option>Mujer</option>
+                                <option>No Responde</option>
+                            </select></div>
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">Foto</label>
+                            <input class="form-control" type="file" id="formFile">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn_registro" onclick="register()"><i class="fas fa-plus"></i> Registrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-user-plus"></i> Estudiantes</button>
+    <hr>
+    <div class="row">
+        <div class="col-12 text-center">
+            <h5>Estudiantes registrados</h5>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Nombre</th>
+                            <th>Profesión</th>
+                            <th>Semestre</th>
+                            <th>Correo</th>
+                            <th>Telefono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="es_table">
+                        <% Users.forEach(entidad => { %>
+                            <% if (entidad.rol == "user") { %>
+                            <tr>
+                                <td>
+                                    <div class="d-flex px-2">
+                                        <div>
+                                            <img src="/users/<%= entidad.photo %>" class="avatar avatar-sm rounded-circle me-2" height="50px" alt="<%= entidad.profile.name %>">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><p class="text-sm font-weight-bold mb-0"><%= entidad.profile.name %></td>
+                                <td><span class="text-xs font-weight-bold"><%= entidad.profile.profesion %></span></td>
+                                <td><span class="text-xs font-weight-bold"><%= entidad.profile.semestre %></span></td>
+                                <td><span class="text-xs font-weight-bold"><%= entidad.profile.email %></span></td>
+                                <td><span class="text-xs font-weight-bold"><%= entidad.profile.phone %></span></td>
+                                <td><button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button></td>
+                            </tr>
+                            <% } %>
+                        <% }) %>
+                        
+                    </tbody>
+                </table>
+              </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+
+   async function register(){
+       let name = document.getElementById('name')
+       let identification_type = document.getElementById('identification_type')
+       let identification = document.getElementById('identification')
+       let email = document.getElementById('email')
+       let phone = document.getElementById('phone')
+       let profesion = document.getElementById('profesion')
+       let semestre = document.getElementById('semestre')
+       let sexo = document.getElementById('sexo')
+       let icon = document.getElementById('formFile')
+       
+       let btn = document.getElementById('btn_registro')
+       btn.disabled = true;
+       btn.innerHTML = `
+           <div class="spinner-border" role="status">
+               <span class="visually-hidden">Loading...</span>
+           </div>
+       `
+
+       let send_post = true
+
+       const form = document.getElementById('register_u')
+       Array.from(form.elements).forEach(element => {
+           if (!element.value) {
+               element.classList.add("is-invalid");
+               element.classList.remove("is-valid");
+               send_post = false
+           } else {
+               element.classList.remove("is-invalid");
+               element.classList.add("is-valid");
+           }
+       });
+
+       let emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+       //Se registra el valor invalido del email
+       if(email.value != ''){
+           if (emailRegex.test(email.value)) {
+               email.classList.remove("is-invalid");
+               email.classList.add("is-valid");
+               // send_post = true
+           } else {
+               email.classList.add("is-invalid");
+               email.classList.remove("is-valid");
+               send_post = false
+           }
+       }
+
+       let render = ''
+       console.log(send_post)
+
+       if(send_post){
+           let formData = new FormData();
+           formData.append('name', name.value);
+           formData.append('identification_type', identification_type.value);
+           formData.append('identification', identification.value);
+           formData.append('email', email.value);
+           formData.append('phone', phone.value);
+           formData.append('profesion', profesion.value);
+           formData.append('semestre', semestre.value);
+           formData.append('sexo', sexo.value);
+
+           if(icon.files[0]){
+               console.log('hay archivo')
+               formData.append('photo',  identification.value + '-' + icon.files[0].name.toLowerCase());
+               console.log(icon.files[0])
+               formData.append('icon', icon.files[0]);
+           }else{
+               formData.append('photo', '');
+           }
+
+           let url = `/user/estudent`
+           await axios({
+               method: 'post',
+               url: url,
+               data: formData,
+               headers: {
+                   'Content-Type': 'multipart/form-data'
+               }
+           })
+           .then(function(response) {
+               console.log(response)
+               if(response.data != 0){
+                   let entidad = response.data.newUser
+                   render += `
+                       <tr>
+                           <td>
+                               <div class="d-flex px-2">
+                                   <div>
+                                       <img src="/users/${entidad.photo}" class="avatar avatar-sm rounded-circle me-2" height="50px" alt="${entidad.profile.name}">
+                                   </div>
+                               </div>
+                           </td>
+                           <td><p class="text-sm font-weight-bold mb-0">${entidad.profile.name}</td>
+                           <td><span class="text-xs font-weight-bold">${entidad.profile.profesion}</span></td>
+                           <td><span class="text-xs font-weight-bold">${entidad.profile.semestre}</span></td>
+                           <td><span class="text-xs font-weight-bold">${entidad.profile.email}</span></td>
+                           <td><span class="text-xs font-weight-bold">${entidad.profile.phone}</span></td>
+                           <td><button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button></td>
+                       </tr>
+                   `
+                   document.getElementById('es_table').innerHTML += render
+
+                   btn.disabled = false;
+                   btn.innerHTML = `<i class="fas fa-paper-plane"></i> Registrar`
+
+                   Array.from(form.elements).forEach(element => {
+                       element.classList.remove("is-valid");
+                       element.classList.remove("is-invalid");
+                       if(element.id != 'id_center'){
+                           element.value = ''
+                       }
+                   });
+                   
+                   $("#exampleModal").modal("hide")
+
+               }
+           })
+           .catch(function(error) {
+               console.log(error)
+               btn.disabled = false;
+               btn.innerHTML = `<i class="fas fa-paper-plane"></i> Registrar`
+           })
+       } else {
+           btn.disabled = false;
+           btn.innerHTML = `<i class="fas fa-paper-plane"></i> Registrar`
+       }
+   }
+
+   window.onload = function() {
+    //    get_dpto();
+   }
+</script>

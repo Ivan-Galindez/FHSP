@@ -1,0 +1,26 @@
+<%- include('./partials/navbar.ejs'); -%>  
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12 text-center mt-4">
+            <h1 class="display-1">Bienvenido</h1>
+            <a class="btn btn-link btn-lg" href="/login"><i class="fas fa-user"></i> Iniciar sesión</a>
+        </div>
+        <hr>
+        <div class="col-6 text-center">
+            <button class="btn btn-primary btn-lg" onclick="redirigir_uni()"><i class="fas fa-university"></i> Universidades</button>
+        </div>
+        <div class="col-6 text-center">
+            <button class="btn btn-warning btn-lg" onclick="redirigir_es()"><i class="fas fa-user-graduate"></i> Estudiantes</button>
+        </div>
+    </div>
+</div> 
+
+<script>
+    function redirigir_uni() {
+        window.location.href = "/universidades"; // Cambia esta URL por la que desees
+    }
+    function redirigir_es() {
+        window.location.href = "/estudiantes"; // Cambia esta URL por la que desees
+    }
+</script>
